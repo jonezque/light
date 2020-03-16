@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            canvas {
+                position: fixed;
+                top:0;
+                left: 0;
+                width: 800px;
+                height: 600px;
+                border: 1px solid;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="c1" height="600" width="800"></canvas>
+        <canvas id="c2" height="600" width="800"></canvas>
+        <script>
+            const image = new Image();
+            let x = 0;
+            let y = 0;
+            image.src = "./unnamed.jpg";
+            image.onload = ()=> {
+                
+                const c1 = document.getElementById('c1').getContext('2d');
+                c1.drawImage(image, 0, 0, 800, 600);
+                const ctx = document.getElementById('c2').getContext('2d');
+                ctx.lineWidth = 0;
+                function draw() {
+                    ctx.fillRect(0, 0, 800,600);
+                    ctx.globalCompositeOperation = "destination-out";
+                    ctx.beginPath();
+                    ctx.arc(x,y, 100, 0, Math.PI*2, false);
+                    ctx.fill();
+                    ctx.globalCompositeOperation = "source-over";
+
+                    var grd=ctx.createRadialGradient(x,y,30,x,y,110);
+                    grd.addColorStop(0,"transparent");
+                    grd.addColorStop(1,"black");
+                    
+                    ctx.arc(x,y, 110, 0, Math.PI*2, false);
+                    ctx.fill();
+                    ctx.fillStyle=grd;
+                    requestAnimationFrame(draw);
+                }
+                window.addEventListener('mousemove', (evt) => {
+                    console.log(evt.clientX, evt.clientY);
+                    x = evt.clientX;
+                    y = evt.clientY;
+                })
+                draw();
+            }
+        </script>
+    </body>
+</html>
